@@ -1,0 +1,17 @@
+name: Test Command Injection
+on:
+  workflow_dispatch:
+    inputs:
+      user_input:
+        description: 'Test input'
+        required: true
+        default: 'test'
+      
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Vulnerable command execution
+        run: |
+          echo "User input: ${{ github.event.inputs.user_input }}"
+          echo "${{ github.event.inputs.user_input }}" > output.txt
