@@ -1,0 +1,20 @@
+name: CI Vulnerability Test
+on: 
+  workflow_dispatch:
+    inputs:
+      cmd:
+        description: 'Command injection test'
+        required: false
+      path:
+        description: 'Path traversal test'
+        required: false
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "${{ github.event.inputs.cmd }}"
+      - run: |
+          cat "${{ github.event.inputs.path }}"
+      - name: Untrusted checkout
+        run: |
+          git clone ${{ github.event.inputs.cmd }}
