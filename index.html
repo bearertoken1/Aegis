@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSS Vulnerability Demonstration - Aegis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+        .warning {
+            background-color: #ff4444;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(255, 68, 68, 0.3);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        .warning h2 {
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 36px;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .demo-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .demo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .demo-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .payload {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .vulnerable-area {
+            background: #fff3cd;
+            border: 2px dashed #ffc107;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            min-height: 50px;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .status-active {
+            background: #28a745;
+            color: white;
+        }
+        .status-interactive {
+            background: #ffc107;
+            color: #333;
+        }
+        .info-section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .info-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        .info-section ul {
+            list-style-position: inside;
+            line-height: 2;
+        }
+        .info-section li {
+            color: #555;
+        }
+        .xss-indicator {
+            display: inline-block;
+            background: #ff4444;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="warning">
+                <h2>⚠️ WARNING - EDUCATIONAL PURPOSE ONLY ⚠️</h2>
+                <p><strong>This page is intentionally vulnerable to demonstrate Cross-Site Scripting (XSS) attacks.</strong></p>
+                <p>NEVER implement this in production environments. This is for security education and penetration testing only.</p>
+            </div>
+            <h1>🛡️ Aegis XSS Demonstration</h1>
+            <p class="subtitle">A comprehensive collection of Cross-Site Scripting vulnerability demonstrations</p>
+        </div>
+
+        <div class="demo-grid">
+            <!-- Demo 1: Image onerror -->
+            <div class="demo-card">
+                <h3>Image onerror XSS <span class="xss-indicator">VULNERABLE</span></h3>
+                <div class="payload">&lt;img src=x onerror=alert('XSS')&gt;</div>
+                <div class="vulnerable-area">
+                    <img src=x onerror="this.onerror=null; console.log('XSS: img onerror'); document.getElementById('log').innerHTML += '✓ XSS triggered: img onerror<br>';">
+                    <p style="margin-top: 10px; color: #666; font-size: 13px;">Image with invalid src triggers onerror event</p>
+                </div>
+                <span class="status status-active">ACTIVE</span>
+            </div>
+
+            <!-- Demo 2: SVG onload -->
+            <div class="demo-card">
+                <h3>SVG onload XSS <span class="xss-indicator">VULNERABLE</span></h3>
+                <div class="payload">&lt;svg onload=alert('XSS')&gt;</div>
+                <div class="vulnerable-area">
+                    <svg onload="console.log('XSS: SVG onload'); document.getElementById('log').innerHTML += '✓ XSS triggered: SVG onload<br>';"></svg>
+                    <p style="margin-top: 10px; color: #666; font-size: 13px;">SVG element executes JavaScript on load</p>
+                </div>
+                <span class="status status-active">ACTIVE</span>
+            </div>
+
+            <!-- Demo 3: details ontoggle -->
+            <div class="demo-card">
+                <h3>details ontoggle XSS <span class="xss-indicator">VULNERABLE</span></h3>
+                <div class="payload">&lt;details open ontoggle=alert('XSS')&gt;</div>
+                <div class="vulnerable-area">
+                    <details open ontoggle="console.log('XSS: details ontoggle'); document.getElementById('log').innerHTML += '✓ XSS triggered: details ontoggle<br>';">
+                        <summary>Click to toggle</summary>
+                        <p>Details content here</p>
+                    </details>
+                    <p style="margin-top: 10px; color: #666; font-size: 13px;">Details element triggers on toggle</p>
+                </div>
+                <span class="status status-active">ACTIVE</span>
+            </div>
+
+            <!-- Demo 4: video onerror -->
+            <div class="demo-card">
+                <h3>video onerror XSS <span class="xss-indicator">VULNERABLE</span></h3>
+                <div class="payload">&lt;video src=1 onerror=alert('XSS')&gt;</div>
+                <div class="vulnerable-area">
+                    <video src="1" onerror="this.onerror=null; console.log('XSS: video onerror'); document.getElementById('log').innerHTML += '✓ XSS triggered: video onerror<br>';"></video>
+                    <p style="margin-top: 10px; color: #666; font-size: 13px;">Video with invalid src triggers onerror</p>
+                </div>
+                <span class="status status-active">ACTIVE</span>
+            </div>
+
+            <!-- Demo 5: audio onerror -->
+            <div class="demo-card">
+                <h3>audio onerror XSS <span class="xss-indicator">VULNERABLE</span></h3>
+                <div class="payload">&lt;audio src=1 onerror=alert('XSS')&gt;</div>
+                <div class="vulnerable-area">
+                    <audio src="1" onerror="this.onerror=null; console.log('XSS: audio onerror'); document.getElementById('log').innerHTML += '✓ XSS triggered: audio onerror<br>';"></audio>
+                    <p style="margin-top: 10px; color: #666; font-size: 13px;">Audio with invalid src triggers onerror</p>
+                </div>
+                <span class="status status-active">ACTIVE</span>
+            </div>
+
+            <!-- Demo 6: anchor href (interactive) -->
+            <div class="demo-card">
+                <h3>anchor href JavaScript XSS <span class="xss-indicator">VULNERABLE</span></h3>
+                <div class="payload">&lt;a href=javascript:alert('XSS')&gt;Click&lt;/a&gt;</div>
+                <div class="vulnerable-area">
+                    <a href="javascript:console.log('XSS: anchor href'); document.getElementById('log').innerHTML += '✓ XSS triggered: anchor href (click)<br>'; void(0);" style="color: #667eea; text-decoration: underline; cursor: pointer;">Click here for XSS</a>
+                    <p style="margin-top: 10px; color: #666; font-size: 13px;">Link with javascript: protocol</p>
+                </div>
+                <span class="status status-interactive">INTERACTIVE</span>
+            </div>
+
+            <!-- Demo 7: form action (interactive) -->
+            <div class="demo-card">
+                <h3>form action JavaScript XSS <span class="xss-indicator">VULNERABLE</span></h3>
+                <div class="payload">&lt;form action=javascript:alert('XSS')&gt;</div>
+                <div class="vulnerable-area">
+                    <form action="javascript:console.log('XSS: form action'); document.getElementById('log').innerHTML += '✓ XSS triggered: form action<br>'; void(0);">
+                        <input type="submit" value="Submit Form" style="padding: 8px 16px; background: #667eea; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    </form>
+                    <p style="margin-top: 10px; color: #666; font-size: 13px;">Form with javascript: action</p>
+                </div>
+                <span class="status status-interactive">INTERACTIVE</span>
+            </div>
+
+            <!-- Demo 8: marquee onstart -->
+            <div class="demo-card">
+                <h3>marquee onstart XSS <span class="xss-indicator">VULNERABLE</span></h3>
+                <div class="payload">&lt;marquee onstart=alert('XSS')&gt;</div>
+                <div class="vulnerable-area">
+                    <marquee onstart="console.log('XSS: marquee onstart'); document.getElementById('log').innerHTML += '✓ XSS triggered: marquee onstart<br>';">⚡ Scrolling XSS Text</marquee>
+                    <p style="margin-top: 10px; color: #666; font-size: 13px;">Marquee executes on animation start</p>
+                </div>
+                <span class="status status-active">ACTIVE</span>
+            </div>
+
+            <!-- Demo 9: img eval src -->
+            <div class="demo-card">
+                <h3>img eval src XSS <span class="xss-indicator">VULNERABLE</span></h3>
+                <div class="payload">&lt;img src=x:alert(1) onerror=eval(src)&gt;</div>
+                <div class="vulnerable-area">
+                    <img src="x:console.log('XSS: img eval')" onerror="try{eval(src.replace('x:', ''))}catch(e){}; this.onerror=null; document.getElementById('log').innerHTML += '✓ XSS triggered: img eval src<br>';">
+                    <p style="margin-top: 10px; color: #666; font-size: 13px;">Image src evaluated as JavaScript</p>
+                </div>
+                <span class="status status-active">ACTIVE</span>
+            </div>
+
+            <!-- Demo 10: textarea (interactive) -->
+            <div class="demo-card">
+                <h3>textarea onfocus XSS <span class="xss-indicator">VULNERABLE</span></h3>
+                <div class="payload">&lt;textarea onfocus=alert('XSS')&gt;</div>
+                <div class="vulnerable-area">
+                    <textarea onfocus="console.log('XSS: textarea onfocus'); document.getElementById('log').innerHTML += '✓ XSS triggered: textarea onfocus<br>';" placeholder="Click to focus" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                    <p style="margin-top: 10px; color: #666; font-size: 13px;">Textarea triggers on focus</p>
+                </div>
+                <span class="status status-interactive">INTERACTIVE</span>
+            </div>
+
+            <!-- Demo 11: input (interactive) -->
+            <div class="demo-card">
+                <h3>input onfocus XSS <span class="xss-indicator">VULNERABLE</span></h3>
+                <div class="payload">&lt;input onfocus=alert('XSS')&gt;</div>
+                <div class="vulnerable-area">
+                    <input type="text" onfocus="console.log('XSS: input onfocus'); document.getElementById('log').innerHTML += '✓ XSS triggered: input onfocus<br>';" placeholder="Click to focus" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                    <p style="margin-top: 10px; color: #666; font-size: 13px;">Input triggers on focus</p>
+                </div>
+                <span class="status status-interactive">INTERACTIVE</span>
+            </div>
+
+            <!-- Demo 12: Script execution log -->
+            <div class="demo-card" style="grid-column: 1 / -1;">
+                <h3>🔍 XSS Execution Log</h3>
+                <div id="log" style="background: #1e1e1e; color: #4ec9b0; padding: 15px; border-radius: 5px; font-family: 'Courier New', monospace; min-height: 100px; max-height: 200px; overflow-y: auto;">
+                    <span style="color: #dcdcdc;">Waiting for XSS triggers...</span><br>
+                </div>
+                <p style="margin-top: 10px; color: #666; font-size: 13px;">This log shows which XSS payloads have been executed. Check browser console for detailed logs.</p>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>🔒 XSS Prevention Best Practices</h2>
+            <ul>
+                <li><strong>Input Validation:</strong> Validate and sanitize all user inputs on both client and server side</li>
+                <li><strong>Output Encoding:</strong> Encode data before rendering it in HTML, JavaScript, CSS, or URLs</li>
+                <li><strong>Content Security Policy (CSP):</strong> Implement strict CSP headers to prevent inline scripts</li>
+                <li><strong>HTTPOnly Cookies:</strong> Set HTTPOnly flag on sensitive cookies to prevent JavaScript access</li>
+                <li><strong>Use Security Libraries:</strong> Utilize frameworks with built-in XSS protection (React, Angular, Vue)</li>
+                <li><strong>Avoid Dangerous Functions:</strong> Don't use eval(), innerHTML, document.write() with user input</li>
+                <li><strong>Security Headers:</strong> Implement X-XSS-Protection, X-Content-Type-Options headers</li>
+                <li><strong>Regular Security Audits:</strong> Perform regular code reviews and security testing</li>
+            </ul>
+        </div>
+
+        <div class="info-section">
+            <h2>⚡ About This Demonstration</h2>
+            <p>This page demonstrates various XSS attack vectors that can be exploited when user input is not properly sanitized. Each card shows a different technique attackers might use to inject malicious scripts into web applications.</p>
+            <p><strong>Remember:</strong> Real-world XSS attacks can lead to session hijacking, credential theft, malware distribution, and complete compromise of user accounts. Always implement proper security measures in production applications.</p>
+        </div>
+    </div>
+
+    <script>
+        console.log('%c🛡️ Aegis XSS Demonstration Loaded', 'color: #667eea; font-size: 20px; font-weight: bold;');
+        console.log('%cThis page contains intentionally vulnerable code for educational purposes.', 'color: #ff4444; font-weight: bold;');
+        console.log('%cXSS vulnerabilities are actively triggering. Check the execution log above.', 'color: #ffc107;');
+        
+        // Initialize log
+        setTimeout(function() {
+            if (document.getElementById('log').innerHTML.includes('Waiting for XSS triggers')) {
+                document.getElementById('log').innerHTML = '<span style="color: #ffc107;">Page loaded. XSS payloads executed automatically.</span><br>';
+            }
+        }, 100);
+    </script>
+</body>
+</html>
